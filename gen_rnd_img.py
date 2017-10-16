@@ -3,9 +3,10 @@ Tobiasz Jarosiewicz
 
 Code to learn basics of how to use multiprocessing.
 The idea is to have some time-consuming function (like adding noise pixel by 
-pixel with ar_rgb_sel() function) run in parallel. 
-Currently the 'image' is split in 4 quarters but is should be divided in as 
-many parts as needed. 
+pixel with ar_rgb_sel() function) run in parallel. The nd array containing 
+images is split into N parts (slices), then the time-consuming function is 
+working in parallel on each slice. After the work is done the slices are 
+merged into the image again. 
 """
 
 import matplotlib.pyplot as plt
@@ -163,7 +164,7 @@ def join_ar2(array_list):
 
 def split_ar(in_array):
     out_ar = []
-    n = 4
+    n = multiprocessing.cpu_count()
     # Divide the array in 2 along the x axis:
     n1 = np.split(in_array, n, axis = 0)
     for i in n1:
@@ -202,14 +203,18 @@ for i in range(10):
     show_img(img1)
 """
 
-
 ar_s = split_ar(img1)
 
+number_processes = multiprocessing.cpu_count()
+n_cpus = multiprocessing.cpu_count()
 
-a0 = ar_s[0]
-a1 = ar_s[1]
-a2 = ar_s[2]
-a3 = ar_s[3]
+a_split = {}
+args = []
+
+for i in range(n_cpus):
+    a_split[i] = ar_s[i]
+    tmpv = (ar_s[i], "r")
+    args.append(tmpv)
 
 #print(a0.ndim)
 #show_img(a3)
@@ -217,8 +222,6 @@ a3 = ar_s[3]
 #for i in range(4):
 #    show_img(i)
 
-
-#"""
 # Multiprocessing part:
 
 number_processes = multiprocessing.cpu_count()
@@ -226,7 +229,8 @@ pool = multiprocessing.Pool(number_processes)
 total_tasks = 4*4
 tasks = range(total_tasks)
 
-args = [(a0, "r"), (a1, "g"), (a2, 'b'), (a3, 'w')]
+#args = [(a0, "r"), (a1, "g"), (a2, 'b'), (a3, 'w')]
+
     
 results = pool.starmap(ar_rgb_sel, args)
 pool.close()
@@ -239,7 +243,7 @@ for elem in results:
 
 final_array = join_ar(out_ar)
 show_img(final_array)
-#"""
+
 #final_array = join_ar(ar_s)
 #show_img(final_array)
 
