@@ -15,6 +15,9 @@ import numpy as np
 import random
 import time
 
+number_processes = multiprocessing.cpu_count()
+N = multiprocessing.cpu_count()
+
 def gen_rnd_sparse(w, h):
     """
     Create an empty array and fill it with random data but with many zero-values.
@@ -139,34 +142,10 @@ def ar_rgb_sel(in_array, col):
             pass
     return in_array
 
-def split_ar2(in_array):
-    out_ar = []
-    # Divide the array in 2 along the x axis:
-    n1 = np.split(in_array, 2, axis = 0)
-    for i in n1:
-        # Divide along the y axis:
-        n2 = np.split(i, 2, axis = 1)
-        for j in n2:
-            # The actual "small" arrays:
-            #show_img(j)
-            out_ar.append(j)
-    return out_ar
-
-def join_ar2(array_list):
-    ay_join1 = np.concatenate((array_list[0], array_list[1]), axis = 0)
-    ay_join2 = np.concatenate((array_list[2], array_list[3]), axis = 0)
-    ay_fin = np.concatenate((ay_join1, ay_join2), axis = 1)
-    #np.transpose(ay_fin, (0, 2, 1))
-    #a = np.transpose(ay_fin)
-    a = np.transpose(ay_fin, (1, 0, 2))
-    #print(a.shape)
-    return a
-
 def split_ar(in_array):
     out_ar = []
-    n = multiprocessing.cpu_count()
     # Divide the array in 2 along the x axis:
-    n1 = np.split(in_array, n, axis = 0)
+    n1 = np.split(in_array, N, axis = 0)
     for i in n1:
         out_ar.append(i)
     return out_ar
@@ -205,15 +184,15 @@ for i in range(10):
 
 ar_s = split_ar(img1)
 
-number_processes = multiprocessing.cpu_count()
+#number_processes = multiprocessing.cpu_count()
 n_cpus = multiprocessing.cpu_count()
 
 a_split = {}
 args = []
 
-for i in range(n_cpus):
+for i in range(N):
     a_split[i] = ar_s[i]
-    tmpv = (ar_s[i], "r")
+    tmpv = (ar_s[i], "w")
     args.append(tmpv)
 
 #print(a0.ndim)
