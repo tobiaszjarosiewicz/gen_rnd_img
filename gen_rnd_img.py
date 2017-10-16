@@ -16,7 +16,7 @@ import random
 import time
 
 number_processes = multiprocessing.cpu_count()
-N = multiprocessing.cpu_count()
+N = 2*multiprocessing.cpu_count()
 
 def gen_rnd_sparse(w, h):
     """
@@ -112,25 +112,25 @@ def ar_rgb_sel(in_array, col):
     for i in range(40):
         chval = 1
     
-        if col == "r":
+        if col == "0":
             for it1 in in_array:
                 for it2 in it1:
                     for rgbv in it2:
                         eps = random.randint(0, chval)
                         it2[0] += eps
-        elif col == "g":
+        elif col == "1":
             for it1 in in_array:
                 for it2 in it1:
                     for rgbv in it2:
                         eps = random.randint(0, chval)
                         it2[1] += eps
-        elif col == "b":
+        elif col == "2":
             for it1 in in_array:
                 for it2 in it1:
                     for rgbv in it2:
                         eps = random.randint(0, chval)
                         it2[2] += eps
-        elif col == "w":
+        elif col == "3":
             for it1 in in_array:
                 for it2 in it1:
                     for rgbv in it2:
@@ -192,7 +192,7 @@ args = []
 
 for i in range(N):
     a_split[i] = ar_s[i]
-    tmpv = (ar_s[i], "w")
+    tmpv = (ar_s[i], str(i%4))
     args.append(tmpv)
 
 #print(a0.ndim)
