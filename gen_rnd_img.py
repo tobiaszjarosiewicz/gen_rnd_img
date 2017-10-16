@@ -138,13 +138,7 @@ def ar_rgb_sel(in_array, col):
             pass
     return in_array
 
-def split_ar(in_array):
-    """
-    Split the input array in 4 equal parts. This is done in 2 steps - first 
-    the 0 axis is split creating 2 rectangle matrices, then these 2 matrices 
-    are divided into 2 leaving 4 equal parts. Probably will fail with odd sized 
-    ndarrays or not square.
-    """
+def split_ar2(in_array):
     out_ar = []
     # Divide the array in 2 along the x axis:
     n1 = np.split(in_array, 2, axis = 0)
@@ -157,12 +151,7 @@ def split_ar(in_array):
             out_ar.append(j)
     return out_ar
 
-def join_ar(array_list):
-    """
-    Join 4 parts of the matrix split by split_ar() function. The function 
-    will work on any 4 ndarrays but is written to restore the original image 
-    of matrix before splitting.
-    """
+def join_ar2(array_list):
     ay_join1 = np.concatenate((array_list[0], array_list[1]), axis = 0)
     ay_join2 = np.concatenate((array_list[2], array_list[3]), axis = 0)
     ay_fin = np.concatenate((ay_join1, ay_join2), axis = 1)
@@ -171,6 +160,20 @@ def join_ar(array_list):
     a = np.transpose(ay_fin, (1, 0, 2))
     #print(a.shape)
     return a
+
+def split_ar(in_array):
+    out_ar = []
+    n = 4
+    # Divide the array in 2 along the x axis:
+    n1 = np.split(in_array, n, axis = 0)
+    for i in n1:
+        out_ar.append(i)
+    return out_ar
+
+def join_ar(array_list):
+    ay_join1 = np.concatenate(array_list, axis = 0)
+    return ay_join1
+
 
 t_s = time.clock()
 
@@ -201,12 +204,21 @@ for i in range(10):
 
 
 ar_s = split_ar(img1)
+
+
 a0 = ar_s[0]
 a1 = ar_s[1]
 a2 = ar_s[2]
 a3 = ar_s[3]
 
+#print(a0.ndim)
+#show_img(a3)
 
+#for i in range(4):
+#    show_img(i)
+
+
+#"""
 # Multiprocessing part:
 
 number_processes = multiprocessing.cpu_count()
@@ -225,15 +237,12 @@ for elem in results:
     out_ar.append(elem)
 
 
-#out_ar.append(a0)
-#out_ar.append(a1)
-#out_ar.append(a2)
-#out_ar.append(a3)
-
-
-
 final_array = join_ar(out_ar)
 show_img(final_array)
+#"""
+#final_array = join_ar(ar_s)
+#show_img(final_array)
+
 #show_img(img1)
 
 t_f = time.clock()
