@@ -47,22 +47,22 @@ def gen_rnd_ar(w, h):
     return data
 
 
-def fill_rgb(in_ar):
+def fill_rgb(in_ar, w, h):
     """
     For debug mostly - fill each quarter of the matrix with different colour.
     """
     col_val = 142
-    for x in range(0, 63):
-        for y in range(0, 63):
+    for x in range(0, int(w/2)):
+        for y in range(0, int(h/2)):
             in_ar[x][y] = [col_val, 0, 0]
-    for x in range(0, 63):
-        for y in range(64, 127):
+    for x in range(0, int(w/2)):
+        for y in range(int(h/2), h):
             in_ar[x][y] = [0, col_val, 0]
-    for x in range(64, 127):
-        for y in range(0, 63):
+    for x in range(int(w/2), w):
+        for y in range(0, int(h/2)):
             in_ar[x][y] = [0, 0, col_val]
-    for x in range(63, 127):
-        for y in range(63, 127):
+    for x in range(int(w/2), w):
+        for y in range(int(h/2), h):
             in_ar[x][y] = [col_val, col_val, col_val]
 
 def show_img(data):
@@ -177,13 +177,13 @@ def join_ar(array_list):
 
 t_s = time.clock()
 
-x = 128
-y = 128
+x = 256
+y = 256
 #img1 = gen_rnd_ar(x, y)
-img1 = np.zeros((128, 128, 3), dtype=np.uint8)
+img1 = np.zeros((x, y, 3), dtype=np.uint8)
 #show_img(img1)
 
-fill_rgb(img1)
+fill_rgb(img1, x, y)
 #print("original")
 show_img(img1)
 #print(img1.shape)
@@ -223,7 +223,7 @@ a3 = ar_s[3]
 
 number_processes = multiprocessing.cpu_count()
 pool = multiprocessing.Pool(number_processes)
-total_tasks = 4
+total_tasks = 4*4
 tasks = range(total_tasks)
 
 args = [(a0, "r"), (a1, "g"), (a2, 'b'), (a3, 'w')]
