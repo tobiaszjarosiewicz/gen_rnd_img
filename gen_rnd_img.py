@@ -16,7 +16,7 @@ import random
 import time
 
 number_processes = multiprocessing.cpu_count()
-N = 2*multiprocessing.cpu_count()
+N = 4*multiprocessing.cpu_count()
 
 def gen_rnd_sparse(w, h):
     """
@@ -142,20 +142,43 @@ def ar_rgb_sel(in_array, col):
             pass
     return in_array
 
-def split_ar(in_array):
+def split_ar(in_array, xyz):
     out_ar = []
     # Divide the array in 2 along the x axis:
-    n1 = np.split(in_array, N, axis = 0)
+    n1 = np.split(in_array, N, axis = xyz)
     for i in n1:
         out_ar.append(i)
     return out_ar
 
-def join_ar(array_list):
-    ay_join1 = np.concatenate(array_list, axis = 0)
+def join_ar(array_list, xyz):
+    ay_join1 = np.concatenate(array_list, axis = xyz)
     return ay_join1
 
+def exec_multi(in_ar, fname):
+    a_split = {}
+    args = []
+    
+    for i in range(N):
+        a_split[i] = ar_s[i]
+        tmpv = (in_ar[i], str(i%4))
+        args.append(tmpv)
+    
+    
+    number_processes = multiprocessing.cpu_count()
+    pool = multiprocessing.Pool(number_processes)
+    total_tasks = 4*4
+    tasks = range(total_tasks)
+        
+    results = pool.starmap(fname, args)
+    pool.close()
+    pool.join()
+    
+    out_ar = []
+    for elem in results:
+        out_ar.append(elem)
+    return out_ar
 
-t_s = time.clock()
+#t_s = time.clock()
 
 x = 256
 y = 256
@@ -168,59 +191,15 @@ fill_rgb(img1, x, y)
 show_img(img1)
 #print(img1.shape)
 
-"""
-for i in range(2):
-    #img1 = gen_rnd_ar(x, y)
-    show_img(img1)
-"""
 
-#ar_rgb_sel(img1, 'r')
-"""
-for i in range(10):
-    #ar_brigh(img1)
-    ar_rgb_sel(img1, 'b')
-    show_img(img1)
-"""
+ar_s = split_ar(img1, 0)
+out_ar = exec_multi(ar_s, ar_rgb_sel)
+final_array = join_ar(out_ar, 0)
 
-ar_s = split_ar(img1)
+ar_s = split_ar(final_array, 1)
+out_ar = exec_multi(ar_s, ar_rgb_sel)
+final_array = join_ar(out_ar, 1)
 
-#number_processes = multiprocessing.cpu_count()
-n_cpus = multiprocessing.cpu_count()
-
-a_split = {}
-args = []
-
-for i in range(N):
-    a_split[i] = ar_s[i]
-    tmpv = (ar_s[i], str(i%4))
-    args.append(tmpv)
-
-#print(a0.ndim)
-#show_img(a3)
-
-#for i in range(4):
-#    show_img(i)
-
-# Multiprocessing part:
-
-number_processes = multiprocessing.cpu_count()
-pool = multiprocessing.Pool(number_processes)
-total_tasks = 4*4
-tasks = range(total_tasks)
-
-#args = [(a0, "r"), (a1, "g"), (a2, 'b'), (a3, 'w')]
-
-    
-results = pool.starmap(ar_rgb_sel, args)
-pool.close()
-pool.join()
-
-out_ar = []
-for elem in results:
-    out_ar.append(elem)
-
-
-final_array = join_ar(out_ar)
 show_img(final_array)
 
 #final_array = join_ar(ar_s)
@@ -228,6 +207,6 @@ show_img(final_array)
 
 #show_img(img1)
 
-t_f = time.clock()
-print(t_f-t_s)
+#t_f = time.clock()
+#print(t_f-t_s)
 
