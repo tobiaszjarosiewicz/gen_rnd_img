@@ -180,8 +180,8 @@ def exec_multi(in_ar, fname):
 
 #t_s = time.clock()
 
-x = 256
-y = 256
+x = 64
+y = 64
 #img1 = gen_rnd_ar(x, y)
 img1 = np.zeros((x, y, 3), dtype=np.uint8)
 #show_img(img1)
