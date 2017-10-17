@@ -29,8 +29,8 @@ def gen_rnd_sparse(w, h):
     data = np.zeros((w, h, 3), dtype=np.uint8)
     
     # Fill the matrix with random color values
-    for i in range(0, w, int(w/50)):
-        for j in range(0, h, int(h/50)):
+    for i in range(0, w, 2):
+        for j in range(0, h, 2):
             r = random.randint(0, 50)
             g = random.randint(0, 100)
             b = random.randint(0, 255)
@@ -180,14 +180,14 @@ def exec_multi(in_ar, fname):
 
 #t_s = time.clock()
 
-x = 64
-y = 64
+x = 128
+y = 128
+####img1 = gen_rnd_ar(x, y)
+#img1 = np.zeros((x, y, 3), dtype=np.uint8)
+#fill_rgb(img1, x, y)
+img1 = gen_rnd_sparse(x, y)
 #img1 = gen_rnd_ar(x, y)
-img1 = np.zeros((x, y, 3), dtype=np.uint8)
-#show_img(img1)
 
-fill_rgb(img1, x, y)
-#print("original")
 show_img(img1)
 #print(img1.shape)
 
