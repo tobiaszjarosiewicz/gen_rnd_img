@@ -55,7 +55,7 @@ def fill_rgb(in_ar, w, h):
     """
     For debug mostly - fill each quarter of the matrix with different colour.
     """
-    col_val = 142
+    col_val = 140
     for x in range(0, int(w/2)):
         for y in range(0, int(h/2)):
             in_ar[x][y] = [col_val, 0, 0]
@@ -73,6 +73,9 @@ def show_img(data):
     """
     Display the image using matplotlib.
     """
+    
+    norm = plt.Normalize()
+    data = norm(data)
     plt.imshow(data)
     plt.title("random")
     plt.show(block=False)
@@ -105,12 +108,9 @@ def ar_rgb_sel(in_array, col):
     Iterate through each element and add a random
     value to each element increasing the chosen channel.
     """
-    #w = len(in_array)
-    #h = len(in_array[0])
-    #print(nxy, w, h)
     
-    for i in range(40):
-        chval = 1
+    for i in range(10):
+        chval = 2
     
         if col == "0":
             for it1 in in_array:
@@ -141,6 +141,14 @@ def ar_rgb_sel(in_array, col):
         else:
             pass
     return in_array
+
+def rgb_norm(in_array, w, h):
+    out_array = np.zeros((w, h, 3), dtype=np.uint8)
+    for i in range(0, w):
+        for j in range(0, h):
+            out_array[i][j] = in_array[i][j]
+    return out_array
+    
 
 def split_ar(in_array, xyz):
     out_ar = []
@@ -180,12 +188,13 @@ def exec_multi(in_ar, fname):
 
 #t_s = time.clock()
 
-x = 128
-y = 128
+x = 256
+y = 256
 ####img1 = gen_rnd_ar(x, y)
 #img1 = np.zeros((x, y, 3), dtype=np.uint8)
 #fill_rgb(img1, x, y)
-img1 = gen_rnd_sparse(x, y)
+#img1 = gen_rnd_sparse(x, y)
+img1 = np.random.rand(x, y, 3)
 #img1 = gen_rnd_ar(x, y)
 
 show_img(img1)
@@ -199,6 +208,8 @@ final_array = join_ar(out_ar, 0)
 ar_s = split_ar(final_array, 1)
 out_ar = exec_multi(ar_s, ar_rgb_sel)
 final_array = join_ar(out_ar, 1)
+
+final_array = rgb_norm(final_array, x, y)
 
 show_img(final_array)
 
