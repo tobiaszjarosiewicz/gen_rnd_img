@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 import multiprocessing
 import numpy as np
 import random
+from scipy import spatial
 import time
 
 number_processes = multiprocessing.cpu_count()
@@ -188,8 +189,8 @@ def exec_multi(in_ar, fname):
 
 #t_s = time.clock()
 
-x = 256
-y = 256
+x = 128
+y = 128
 ####img1 = gen_rnd_ar(x, y)
 #img1 = np.zeros((x, y, 3), dtype=np.uint8)
 #fill_rgb(img1, x, y)
@@ -212,6 +213,9 @@ final_array = join_ar(out_ar, 1)
 final_array = rgb_norm(final_array, x, y)
 
 show_img(final_array)
+
+pt = [0, 0, 0]
+#pfound = final_array[spatial.KDTree(final_array).query(pt)[1]]
 
 #final_array = join_ar(ar_s)
 #show_img(final_array)
