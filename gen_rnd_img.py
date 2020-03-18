@@ -224,4 +224,5 @@ pt = [0, 0, 0]
 
 #t_f = time.clock()
 #print(t_f-t_s)
+# print("done")
 
